@@ -23,7 +23,7 @@ module.exports = {
               model: "text-davinci-003",
               prompt: prompt,
               max_tokens: 4000,
-              temperature: 0.3,
+              temperature: 0.9,
               top_p: 0.3,
               presence_penalty: 0,
               frequency_penalty: 0.5,
