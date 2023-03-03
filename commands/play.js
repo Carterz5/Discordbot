@@ -82,7 +82,7 @@ module.exports = {
                 //Checks if url was a playlist and adds songs to the queue
                 if (ytpl.validateID(args[0])) {
                     const playlist_ID = await ytpl.getPlaylistID(args[0]);
-                    const playlist = await ytpl(playlist_ID)
+                    const playlist = await ytpl(playlist_ID, {limit: 1000})
                     for (let i = 1; i < playlist.items.length; i++){
                         var element = playlist.items[i];
                         song = { title: element.title, url: element.shortUrl }
@@ -112,7 +112,7 @@ module.exports = {
             if (ytpl.validateID(args[0])) {
                 if (!server_queue) {return}
                 const playlist_ID = await ytpl.getPlaylistID(args[0]);
-                const playlist = await ytpl(playlist_ID)
+                const playlist = await ytpl(playlist_ID, {limit: 1000})
                 for (let i = 1; i < playlist.items.length; i++){
                     var element = playlist.items[i];
                     song = { title: element.title, url: element.shortUrl }
