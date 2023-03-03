@@ -1,7 +1,7 @@
 const ytdl = require('ytdl-core');
 const ytSearch = require('yt-search');
 const message = require('../events/guild/message');
-
+const ytpl = require('ytpl');
 //Global queue for your bot. Every server will have a key and value pair in this map. { guild.id, queue_constructor{} }
 const queue = new Map();
 
@@ -29,6 +29,7 @@ module.exports = {
             let song = {};
 
             //If the first argument is a link. Set the song object to have two keys. Title and URl.
+                      
             if (ytdl.validateURL(args[0])) {
                 try{
                 const song_info = await ytdl.getInfo(args[0]);
@@ -62,6 +63,7 @@ module.exports = {
                      message.channel.send('Error finding video.');return;
                 }
             }
+             
 
             //If the server queue does not exist (which doesn't for the first video queued) then create a constructor to be added to our global queue.
             if (!server_queue){
@@ -76,8 +78,20 @@ module.exports = {
                 //Add our key and value pair into the global queue. We then use this to get our server queue.
                 queue.set(message.guild.id, queue_constructor);
                 queue_constructor.songs.push(song);
+
+                //Checks if url was a playlist and adds songs to the queue
+                if (ytpl.validateID(args[0])) {
+                    const playlist_ID = await ytpl.getPlaylistID(args[0]);
+                    const playlist = await ytpl(playlist_ID)
+                    for (let i = 1; i < playlist.items.length; i++){
+                        var element = playlist.items[i];
+                        song = { title: element.title, url: element.shortUrl }
+                        queue_constructor.songs.push(song);
+                    }
+                    message.channel.send(`👍 Added **${playlist.items.length}** songs from playlist **${playlist.title}** `)
+                }
     
-                //Establish a connection and play the song with the vide_player function.
+                //Establish a connection and play the song with the video_player function.
                 try {
                     const connection = await voice_channel.join();
                     queue_constructor.connection = connection;
@@ -89,11 +103,23 @@ module.exports = {
                     message.channel.send('There was an error connecting!');
                     throw err;
                 }
-                console.log('anus')
+                
             } else{
                 server_queue.songs.push(song);
-                return message.channel.send(`👍 **${song.title}** added to queue!`);
+                message.channel.send(`👍 **${song.title}** added to queue!`);
             }
+            //Checks if url was a playlist and adds songs to the queue
+            if (ytpl.validateID(args[0])) {
+                if (!server_queue) {return}
+                const playlist_ID = await ytpl.getPlaylistID(args[0]);
+                const playlist = await ytpl(playlist_ID)
+                for (let i = 1; i < playlist.items.length; i++){
+                    var element = playlist.items[i];
+                    song = { title: element.title, url: element.shortUrl }
+                    server_queue.songs.push(song);
+                }
+                message.channel.send(`👍 Added **${playlist.items.length}** songs from playlist **${playlist.title}** `)
+            } 
         }
 
         else if(cmd === 'skip') skip_song(message, server_queue, voice_channel);
