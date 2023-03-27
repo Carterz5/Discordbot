@@ -1,7 +1,8 @@
 const ytdl = require('ytdl-core');
 const ytSearch = require('yt-search');
-const message = require('../events/guild/message');
+const message = require('../events/guild/messageCreate');
 const ytpl = require('ytpl');
+const { joinVoiceChannel } = require('@discordjs/voice');
 //Global queue for your bot. Every server will have a key and value pair in this map. { guild.id, queue_constructor{} }
 const queue = new Map();
 
@@ -93,7 +94,7 @@ module.exports = {
     
                 //Establish a connection and play the song with the video_player function.
                 try {
-                    const connection = await voice_channel.join();
+                    const connection = await voice_channel.joinVoiceChannel();
                     queue_constructor.connection = connection;
                     video_player(message.guild, queue_constructor.songs[0]);
                     console.log('assholes')
