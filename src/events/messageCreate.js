@@ -6,6 +6,12 @@ module.exports = (client, message) => {
 
     const prefix = client.config.prefix;
 
+    const lower = message.content.toLowerCase();
+
+    if((lower.includes('4') && lower.includes('big')) || (lower.includes('four') && lower.includes('big'))){
+        message.channel.send('GUYS, AND THEY BUST ON MY EYES');
+    }
+
     if (message.content.indexOf(prefix) !== 0)
         return;
 
