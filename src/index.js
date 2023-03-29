@@ -103,22 +103,22 @@ const setEnvironment = () => {
 }
 
 
-const loadFramework = () => {
-    console.log(`-> loading Web Framework ......`);
-    return new Promise((resolve, reject) => {
-        const app = express();
-        const port = client.config.port || 33333;
+// const loadFramework = () => {
+//     console.log(`-> loading Web Framework ......`);
+//     return new Promise((resolve, reject) => {
+//         const app = express();
+//         const port = client.config.port || 33333;
 
-        app.get('/', function (req, res) {
-            res.send('200 ok.')
-        });
+//         app.get('/', function (req, res) {
+//             res.send('200 ok.')
+//         });
 
-        app.listen(port, function () {
-            console.log(`Server start listening port on ${port}`);
-            resolve();
-        });
-    })
-}
+//         app.listen(port, function () {
+//             console.log(`Server start listening port on ${port}`);
+//             resolve();
+//         });
+//     })
+// }
 
 
 const loadEvents = () => {
@@ -174,7 +174,7 @@ const loadCommands = () => {
 
 Promise.resolve()
     .then(() => setEnvironment())
-    .then(() => loadFramework())
+    //.then(() => loadFramework())
     .then(() => loadEvents())
     .then(() => loadCommands())
     .then(() => {
