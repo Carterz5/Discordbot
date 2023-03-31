@@ -17,19 +17,21 @@ module.exports = {
     ],
 
     async execute(client, message, args) {
+        
         if (!args[0])
             return message.reply({ content: `❌ | Write the name of the music you want to search.`, allowedMentions: { repliedUser: false } });
-
-
-        const results = await client.player.search(args.join(' '))
+        
+            
+        const results = await  client.player.search(args.join(' '))
             .catch((error) => {
                 console.log(error);
                 return message.reply({ content: `❌ | The service is experiencing some problems, please try again.`, allowedMentions: { repliedUser: false } });
             });
-
+        
+        
         if (!results || !results.hasTracks())
             return message.reply({ content: `❌ | No results found.`, allowedMentions: { repliedUser: false } });
-
+        
 
         /*
         const queue = await client.player.play(message.member.voice.channel.id, results, {
@@ -73,10 +75,14 @@ module.exports = {
 
         results.playlist ? queue.addTrack(results.tracks) : queue.addTrack(results.tracks[0]);
 
+        try{
         if (!queue.isPlaying())
             await queue.node.play();
 
         return message.react('👍');
+        } catch (error){console.log(error)
+            return message.reply({ content: `❌ | Oopsie woopsie! (T⌓T) Could not extract stream for this track`, allowedMentions: { repliedUser: false } });
+        }
     },
 
     async slashExecute(client, interaction) {
